@@ -7,7 +7,7 @@
     </div>
 <?php endif; ?>
 
-<div class="container mt-5" style="padding-top: <?= !empty($data['error']) ? '70px' : '0'; ?>;">
+<div class="container mt-5" style="padding-top: <?= !empty($data['error']) ? '70px' : '0'; ?>; min-height: calc(100vh - 56px);">
     <h1>Score Toevoegen</h1>
     <form action="<?= URLROOT; ?>/scores/add" method="POST">
         <div class="mb-3">

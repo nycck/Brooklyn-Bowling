@@ -63,21 +63,37 @@ class Scores extends BaseController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
+            $score = $this->scoreModel->getScoreById($id);
+
+            if (!$score) {
+                die('Score niet gevonden.');
+            }
+
             $data = [
+                'score' => $score,
                 'id' => $id,
                 'spelerNaam' => $_POST['spelerNaam'] ?? '',
-                'score' => $_POST['score'] ?? '',
+                'scoreValue' => $_POST['score'] ?? '',
                 'reserveringId' => $_POST['reserveringId'] ?? '',
                 'error' => ''
             ];
 
-            if (empty($data['spelerNaam']) || empty($data['score']) || empty($data['reserveringId'])) {
+            if (empty($data['spelerNaam']) || empty($data['scoreValue']) || empty($data['reserveringId'])) {
                 $data['error'] = 'Alle velden zijn verplicht.';
+            } elseif ($this->scoreModel->scoreExists($data['spelerNaam'], $data['scoreValue'], $data['reserveringId'])) {
+                $data['error'] = 'Score bestaat al voor deze speler, score en reservering.';
             }
 
             if (empty($data['error'])) {
-                if ($this->scoreModel->updateScore($data)) {
-                    header('Location: ' . URLROOT . '/scores/index?message=' . urlencode('Score is succesvol gewijzigd.') . '&type=warning');
+                $updateData = [
+                    'id' => $id,
+                    'spelerNaam' => $data['spelerNaam'],
+                    'score' => $data['scoreValue'],
+                    'reserveringId' => $data['reserveringId']
+                ];
+
+                if ($this->scoreModel->updateScore($updateData)) {
+                    header('Location: ' . URLROOT . '/scores/index?message=' . urlencode('Score succesvol gewijzigd.') . '&type=success');
                     exit;
                 } else {
                     $data['error'] = 'Er is een fout opgetreden.';
@@ -103,11 +119,25 @@ class Scores extends BaseController
 
     public function delete($id)
     {
+        $score = $this->scoreModel->getScoreById($id);
+
+        if (!$score) {
+            header('Location: ' . URLROOT . '/scores/index?message=' . urlencode('Score niet gevonden.') . '&type=error');
+            exit;
+        }
+
+        // Check if the score belongs to restricted names like "admin" or "test"
+        if (isset($score->SpelerNaam) && in_array(strtolower($score->SpelerNaam), ['admin', 'test'])) {
+            header('Location: ' . URLROOT . '/scores/index?message=' . urlencode('Je kan geen scores van "admin" of "test" verwijderen.') . '&type=error');
+            exit;
+        }
+
         if ($this->scoreModel->deleteScore($id)) {
-            header('Location: ' . URLROOT . '/scores/index?message=' . urlencode('Score is succesvol verwijderd.') . '&type=danger');
+            header('Location: ' . URLROOT . '/scores/index?message=' . urlencode('Score succesvol verwijderd.') . '&type=success');
             exit;
         } else {
-            die('Er is een fout opgetreden bij het verwijderen.');
+            header('Location: ' . URLROOT . '/scores/index?message=' . urlencode('Er is een fout opgetreden bij het verwijderen.') . '&type=error');
+            exit;
         }
     }
 }
