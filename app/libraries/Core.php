@@ -50,8 +50,7 @@ class Core
         /**
          * Check of de method (tweede woord in de URL) bestaat in de controllerclass
          */
-        if (method_exists($this->currentController, $url[1])) {
-
+        if (isset($url[1]) && method_exists($this->currentController, $url[1])) {
             /**
              * Bewaar de naam van de method in $this->currentMethod
              */
@@ -68,7 +67,7 @@ class Core
          * in het array $this->params gezet. Anders wordt er een leeg
          * array in $this->params gezet. Dit is een ternary operator
          */
-        $this->params = $url ? array_values($url): [];
+        $this->params = $url ? array_values($url) : [];
 
         /**
          * Roep de method met alle parameters aan van de class 

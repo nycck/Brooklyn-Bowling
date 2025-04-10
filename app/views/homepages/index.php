@@ -1,26 +1,50 @@
 <?php require_once APPROOT . '/views/includes/header.php'; ?>
 
-<!-- Voor het centreren van de container gebruiken we het bootstrap grid -->
-<div class="container">
-    <div class="row mt-3">
+<!-- Video als achtergrond -->
+<video autoplay muted loop class="video-background">
+    <source src="<?= URLROOT; ?>/public/videos/Bowl2.mp4" type="video/mp4">
+    Je browser ondersteunt geen video.
+</video>
 
-        <div class="col-2"></div>
-
-        <div class="col-8">
-
-            <h3><?php echo $data['title']; ?></h3>
-
-            <a href="<?= URLROOT; ?>/smartphones/index">Overzicht smartphones</a> |
-            <a href="<?= URLROOT; ?>/sneakers/index">Mooiste sneakers</a> | 
-            <a href="<?= URLROOT; ?>/horloges/index">Duurste Horloges</a> | 
-            <a href="<?= URLROOT; ?>/zangeressen/index">Rijkste Zangeressen</a> | 
-
+<!-- Content -->
+<div class="content">
+    <div class="container text-center">
+        <div class="row mt-5">
+            <div class="col-12">
+                <h1>Strike na strike bij Brooklyn Bowling!</h1>
+            </div>
         </div>
-        
-        <div class="col-2"></div>
-        
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3>Kom nu Bowlen bij ons!</h3>
+                <a href="#" class="btn btn-warning mt-3">Meer info!</a>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3>Bekijk onze reserveringen!</h3>
+                <a href="<?= URLROOT; ?>/reserveringen/index" class="btn btn-primary mt-3">Reserveringen</a>
+            </div>
+        </div>
     </div>
+</div>
 
+<!-- Tweede sectie -->
+<div class="content">
+    <div class="container text-center">
+        <div class="row mt-5">
+            <div class="col-12">
+                <h1>Welkom bij onze tweede sectie!</h1>
+            </div>
+        </div>
+        <img src="<?= URLROOT; ?>/public/img/Bowl1.jpg" alt=" " class="img-fluid rounded">
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3>Meer informatie over Brooklyn Bowling!</h3>
+                <a href="#" class="btn btn-primary mt-3">Lees meer!</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php require_once APPROOT . '/views/includes/footer.php'; ?>
