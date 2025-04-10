@@ -3,9 +3,7 @@
 
 <div class="container mt-5">
     <h1>Scores</h1>
-    <?php if ($_SESSION['user_email'] === 'test123@gmail.com'): ?>
-        <a href="<?= URLROOT; ?>/scores/add" class="btn btn-primary mb-3">Score Toevoegen</a>
-    <?php endif; ?>
+    <a href="<?= URLROOT; ?>/scores/add" class="btn btn-primary mb-3">Score Toevoegen</a>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -13,9 +11,7 @@
                 <th>Speler Naam</th>
                 <th>Score</th>
                 <th>Reservering ID</th>
-                <?php if ($_SESSION['user_email'] === 'test123@gmail.com'): ?>
-                    <th>Acties</th>
-                <?php endif; ?>
+                <th>Acties</th>
             </tr>
         </thead>
         <tbody>
@@ -25,12 +21,10 @@
                     <td><?= $score->SpelerNaam; ?></td>
                     <td><?= $score->Score; ?></td>
                     <td><?= $score->ReserveringId; ?></td>
-                    <?php if ($_SESSION['user_email'] === 'test123@gmail.com'): ?>
-                        <td>
-                            <a href="<?= URLROOT; ?>/scores/edit/<?= $score->Id; ?>" class="btn btn-warning btn-sm">Wijzigen</a>
-                            <a href="<?= URLROOT; ?>/scores/delete/<?= $score->Id; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Weet je zeker dat je deze score wilt verwijderen?');">Verwijderen</a>
-                        </td>
-                    <?php endif; ?>
+                    <td>
+                        <a href="<?= URLROOT; ?>/scores/edit/<?= $score->Id; ?>" class="btn btn-warning btn-sm">Wijzigen</a>
+                        <a href="<?= URLROOT; ?>/scores/delete/<?= $score->Id; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Weet je zeker dat je deze score wilt verwijderen?');">Verwijderen</a>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

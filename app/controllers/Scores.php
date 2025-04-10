@@ -11,30 +11,13 @@ class Scores extends BaseController
 
     public function index()
     {
-        if (!isLoggedIn()) {
-            header('Location: ' . URLROOT . '/users/login');
-            exit;
-        }
-
-        // If logged in as admin, show all scores
-        if (isAdmin()) {
-            $scores = $this->scoreModel->getScores();
-        } else {
-            // Otherwise, show only the scores of the logged-in customer
-            $scores = $this->scoreModel->getScoresByUserId($_SESSION['user_id']);
-        }
-
+        $scores = $this->scoreModel->getScores();
         $data = ['scores' => $scores];
         $this->view('scores/index', $data);
     }
 
     public function add()
     {
-        if (!isAdmin()) {
-            header('Location: ' . URLROOT . '/scores/index');
-            exit;
-        }
-
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -45,8 +28,9 @@ class Scores extends BaseController
                 'error' => ''
             ];
 
-            if (!$this->scoreModel->reserveringExists($data['reserveringId'])) {
-                $data['error'] = 'De opgegeven Reservering ID bestaat niet.';
+            // Check if the score already exists
+            if ($this->scoreModel->scoreExists($data['spelerNaam'], $data['score'], $data['reserveringId'])) {
+                $data['error'] = 'Score bestaat al voor deze datum.';
             }
 
             if (empty($data['error'])) {
@@ -72,11 +56,6 @@ class Scores extends BaseController
 
     public function edit($id)
     {
-        if (!isAdmin()) {
-            header('Location: ' . URLROOT . '/scores/index');
-            exit;
-        }
-
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -95,26 +74,31 @@ class Scores extends BaseController
             if (empty($data['error'])) {
                 if ($this->scoreModel->updateScore($data)) {
                     header('Location: ' . URLROOT . '/scores/index');
+                    exit;
                 } else {
-                    $data['error'] = 'Er is een fout opgetreden.';
+                    $data['error'] = 'Er is een fout opgetreden bij het opslaan.';
                 }
             }
 
             $this->view('scores/edit', $data);
         } else {
             $score = $this->scoreModel->getScoreById($id);
-            $data = ['score' => $score];
+
+            if (!$score) {
+                die('Score niet gevonden.');
+            }
+
+            $data = [
+                'score' => $score,
+                'error' => ''
+            ];
+
             $this->view('scores/edit', $data);
         }
     }
 
     public function delete($id)
     {
-        if (!isAdmin()) {
-            header('Location: ' . URLROOT . '/scores/index');
-            exit;
-        }
-
         if ($this->scoreModel->deleteScore($id)) {
             header('Location: ' . URLROOT . '/scores/index');
         } else {

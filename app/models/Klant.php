@@ -52,4 +52,13 @@ class Klant
         $this->db->bind(':id', $id);
         return $this->db->execute();
     }
+
+    public function emailExists($email)
+    {
+        $this->db->query('SELECT COUNT(*) as count FROM Klanten WHERE Email = :email');
+        $this->db->bind(':email', $email);
+        $result = $this->db->single();
+
+        return $result && $result->count > 0;
+    }
 }

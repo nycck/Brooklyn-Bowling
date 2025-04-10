@@ -16,35 +16,24 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="<?= URLROOT; ?>">Brooklyn Bowling</a>
-    <?php if (isset($_SESSION['user_id'])): ?>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="<?= URLROOT; ?>/reserveringen/index">Mijn Reserveringen</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="<?= URLROOT; ?>/scores/index">Mijn Scores</a>
-          </li>
-          <?php if (isAdmin()): ?>
-            <li class="nav-item">
-              <a class="nav-link" href="<?= URLROOT; ?>/dashboard/index">Dashboard</a>
-            </li>
-          <?php endif; ?>
-        </ul>
-      </div>
-      <div>
-        <a href="<?= URLROOT; ?>/users/logout" class="btn btn-outline-light">Uitloggen</a>
-      </div>
-    <?php else: ?>
-      <div>
-        <a href="<?= URLROOT; ?>/public_reserveringen/index" class="btn btn-outline-light me-2">Reserveren</a>
-        <a href="<?= URLROOT; ?>/users/login" class="btn btn-outline-light me-2">Inloggen</a>
-        <a href="<?= URLROOT; ?>/users/register" class="btn btn-outline-light">Registreren</a>
-      </div>
-    <?php endif; ?>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="<?= URLROOT; ?>/reserveringen/index">Reserveringen</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<?= URLROOT; ?>/scores/index">Scores</a>
+        </li>
+        
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<?= URLROOT; ?>/klanten/index">Klanten</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
 </body>

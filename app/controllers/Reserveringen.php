@@ -6,12 +6,6 @@ class Reserveringen extends BaseController
 
     public function __construct()
     {
-        // Check if the user is logged in as test123@gmail.com
-        if (!isset($_SESSION['user_email']) || $_SESSION['user_email'] !== 'test123@gmail.com') {
-            header('Location: ' . URLROOT . '/users/login');
-            exit;
-        }
-
         $this->reserveringModel = $this->model('Reservering');
     }
 
@@ -24,16 +18,11 @@ class Reserveringen extends BaseController
 
     public function add()
     {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: ' . URLROOT . '/users/login');
-            exit;
-        }
-
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $data = [
-                'klantId' => $_SESSION['user_id'], // Gebruik de ingelogde gebruiker
+                'klantId' => !empty($_POST['klantId']) ? trim($_POST['klantId']) : null,
                 'baanId' => !empty($_POST['baanId']) ? trim($_POST['baanId']) : null,
                 'starttijd' => !empty($_POST['starttijd']) ? trim($_POST['starttijd']) : null,
                 'eindtijd' => !empty($_POST['eindtijd']) ? trim($_POST['eindtijd']) : null,
@@ -43,6 +32,10 @@ class Reserveringen extends BaseController
                 'banen' => $this->reserveringModel->getBanen(),
                 'error' => ''
             ];
+
+            if (empty($data['klantId'])) {
+                $data['error'] = 'Klant ID is verplicht.';
+            }
 
             if (empty($data['error'])) {
                 if ($this->reserveringModel->addReservering($data)) {
@@ -55,6 +48,7 @@ class Reserveringen extends BaseController
             $this->view('reserveringen/add', $data);
         } else {
             $data = [
+                'klantId' => '',
                 'baanId' => '',
                 'starttijd' => '',
                 'eindtijd' => '',
@@ -72,6 +66,8 @@ class Reserveringen extends BaseController
     public function edit($id)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
             $data = [
                 'id' => $id,
                 'klantId' => !empty($_POST['klantId']) ? trim($_POST['klantId']) : null,
@@ -81,18 +77,40 @@ class Reserveringen extends BaseController
                 'aantalVolwassenen' => !empty($_POST['aantalVolwassenen']) ? trim($_POST['aantalVolwassenen']) : null,
                 'aantalKinderen' => !empty($_POST['aantalKinderen']) ? trim($_POST['aantalKinderen']) : null,
                 'totaalPrijs' => !empty($_POST['totaalPrijs']) ? trim($_POST['totaalPrijs']) : null,
-                'banen' => $this->reserveringModel->getBanen() // Haal beschikbare banen op
+                'banen' => $this->reserveringModel->getBanen(),
+                'error' => ''
             ];
 
-            if ($this->reserveringModel->updateReservering($data)) {
-                header('Location: ' . URLROOT . '/reserveringen/index');
+            // Fetch the current reservation to compare the KlantId
+            $currentReservering = $this->reserveringModel->getReserveringById($id);
+
+            if ($currentReservering && $currentReservering->KlantId == $data['klantId']) {
+                $data['error'] = 'Je kunt niet wijzigen naar hetzelfde Klant ID.';
             }
+
+            if (empty($data['error'])) {
+                if ($this->reserveringModel->updateReservering($data)) {
+                    header('Location: ' . URLROOT . '/reserveringen/index');
+                    exit;
+                } else {
+                    $data['error'] = 'Er is een fout opgetreden.';
+                }
+            }
+
+            $this->view('reserveringen/edit', $data);
         } else {
             $reservering = $this->reserveringModel->getReserveringById($id);
+
+            if (!$reservering) {
+                die('Reservering niet gevonden.');
+            }
+
             $data = [
                 'reservering' => $reservering,
-                'banen' => $this->reserveringModel->getBanen() // Haal beschikbare banen op
+                'banen' => $this->reserveringModel->getBanen(),
+                'error' => ''
             ];
+
             $this->view('reserveringen/edit', $data);
         }
     }
@@ -101,52 +119,6 @@ class Reserveringen extends BaseController
     {
         if ($this->reserveringModel->deleteReservering($id)) {
             header('Location: ' . URLROOT . '/reserveringen/index');
-        }
-    }
-
-    public function public()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-            $data = [
-                'naam' => trim($_POST['naam']),
-                'email' => trim($_POST['email']),
-                'baanId' => trim($_POST['baanId']),
-                'starttijd' => trim($_POST['starttijd']),
-                'eindtijd' => trim($_POST['eindtijd']),
-                'aantalVolwassenen' => trim($_POST['aantalVolwassenen']),
-                'aantalKinderen' => trim($_POST['aantalKinderen']),
-                'error' => ''
-            ];
-
-            if (empty($data['naam']) || empty($data['email']) || empty($data['baanId']) || empty($data['starttijd']) || empty($data['eindtijd'])) {
-                $data['error'] = 'Vul alle velden in.';
-            }
-
-            if (empty($data['error'])) {
-                // Voeg reservering toe aan database
-                if ($this->reserveringModel->addPublicReservering($data)) {
-                    header('Location: ' . URLROOT . '/reserveringen/public');
-                } else {
-                    $data['error'] = 'Er is een fout opgetreden.';
-                }
-            }
-
-            $this->view('reserveringen/public', $data);
-        } else {
-            $data = [
-                'naam' => '',
-                'email' => '',
-                'baanId' => '',
-                'starttijd' => '',
-                'eindtijd' => '',
-                'aantalVolwassenen' => '',
-                'aantalKinderen' => '',
-                'error' => ''
-            ];
-
-            $this->view('reserveringen/public', $data);
         }
     }
 }

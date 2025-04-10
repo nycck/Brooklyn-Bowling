@@ -24,8 +24,7 @@ class Core
         /**
          * Check of de controllerclass bestaat
          */
-        if (file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
-
+        if (isset($url[0]) && file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
             /**
              * Stop de naam van de controller in $this->currentController
              */
@@ -43,9 +42,16 @@ class Core
         require_once '../app/controllers/' . $this->currentController . '.php';
 
         /**
-         * Maak een nieuw object van de controllerclass
+         * Controleer of de controllerclass bestaat
          */
-        $this->currentController = new $this->currentController();
+        if (class_exists($this->currentController)) {
+            /**
+             * Maak een nieuw object van de controllerclass
+             */
+            $this->currentController = new $this->currentController();
+        } else {
+            die("Error: Controller class '{$this->currentController}' not found.");
+        }
 
         /**
          * Check of de method (tweede woord in de URL) bestaat in de controllerclass
@@ -75,11 +81,9 @@ class Core
         call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
     }
 
-
     public function getURL()
     {
         if (isset($_GET['url'])) {
-
             // Haal de forward-slash vooraan de url eraf
             $url = rtrim($_GET['url'], '/');
 
@@ -88,9 +92,7 @@ class Core
 
             // Zet de string gescheiden door een / in een array
             $url = explode('/', $url);
-
         } else {
-
             /**
              * Wanneer er niets achter de vhost-naam wordt gezet
              * dan wordt het onderstaande array in $url gezet

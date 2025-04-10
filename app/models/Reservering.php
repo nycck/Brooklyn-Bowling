@@ -30,21 +30,6 @@ class Reservering
         return $this->db->execute();
     }
 
-    public function addPublicReservering($data)
-    {
-        $this->db->query('INSERT INTO reserveringen (Naam, Email, BaanId, Starttijd, Eindtijd, AantalVolwassenen, AantalKinderen) 
-                          VALUES (:naam, :email, :baanId, :starttijd, :eindtijd, :aantalVolwassenen, :aantalKinderen)');
-        $this->db->bind(':naam', $data['naam']);
-        $this->db->bind(':email', $data['email']);
-        $this->db->bind(':baanId', $data['baanId']);
-        $this->db->bind(':starttijd', $data['starttijd']);
-        $this->db->bind(':eindtijd', $data['eindtijd']);
-        $this->db->bind(':aantalVolwassenen', $data['aantalVolwassenen']);
-        $this->db->bind(':aantalKinderen', $data['aantalKinderen']);
-
-        return $this->db->execute();
-    }
-
     public function getReserveringById($id)
     {
         $this->db->query('SELECT * FROM Reserveringen WHERE Id = :id');
@@ -79,5 +64,14 @@ class Reservering
     {
         $this->db->query('SELECT Id, BaanNummer FROM Banen WHERE IsActief = 1 LIMIT 8');
         return $this->db->resultSet();
+    }
+
+    public function klantExists($klantId)
+    {
+        $this->db->query('SELECT COUNT(*) as count FROM Klanten WHERE Id = :klantId');
+        $this->db->bind(':klantId', $klantId);
+        $result = $this->db->single();
+
+        return $result && $result->count > 0;
     }
 }

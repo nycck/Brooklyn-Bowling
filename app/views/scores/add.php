@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <h1>Score Toevoegen</h1>
     <?php if (!empty($data['error'])): ?>
-        <div class="alert alert-danger"><?= $data['error']; ?></div>
+        <script>alert('<?= $data['error']; ?>');</script>
     <?php endif; ?>
     <form action="<?= URLROOT; ?>/scores/add" method="POST">
         <div class="mb-3">
