@@ -3,7 +3,7 @@
  * De database verbindingsgegevens
  */
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'Mvc_smartphone_2408A');
+define('DB_NAME', 'brooklyn_bowling');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 

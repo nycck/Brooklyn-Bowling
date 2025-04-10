@@ -8,12 +8,10 @@
 
         <div class="col-8">
 
-            <h3><?php echo $data['title']; ?></h3>
+            <h3><?php echo $data['title']; ?></h3> 
 
-            <a href="<?= URLROOT; ?>/smartphones/index">Overzicht smartphones</a> |
-            <a href="<?= URLROOT; ?>/sneakers/index">Mooiste sneakers</a> | 
-            <a href="<?= URLROOT; ?>/horloges/index">Duurste Horloges</a> | 
-            <a href="<?= URLROOT; ?>/zangeressen/index">Rijkste Zangeressen</a> | 
+            <!-- Toevoegen van de knop -->
+            <a href="<?php echo URLROOT; ?>/bestellingen/index" class="btn btn-primary mt-3">Overzicht Bestelling</a>
 
         </div>
         
