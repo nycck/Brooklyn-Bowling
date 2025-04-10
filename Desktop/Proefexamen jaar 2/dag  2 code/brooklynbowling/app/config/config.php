@@ -11,7 +11,7 @@ define('DB_PASS', '');
 /**
  * De naam van de virtualhost
  */
-define('URLROOT', 'http://testbrooklyn/');
+define('URLROOT', 'http://laatstebowling/');
 
 /**
  * Het pad naar de folder app
