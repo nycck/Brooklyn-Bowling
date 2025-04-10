@@ -25,10 +25,10 @@ class Klanten extends BaseController
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $data = [
-                'voornaam' => trim($_POST['voornaam']),
-                'achternaam' => trim($_POST['achternaam']),
-                'email' => trim($_POST['email']),
-                'telefoonnummer' => trim($_POST['telefoonnummer']),
+                'voornaam' => $_POST['voornaam'] ?? '',
+                'achternaam' => $_POST['achternaam'] ?? '',
+                'email' => $_POST['email'] ?? '',
+                'telefoonnummer' => $_POST['telefoonnummer'] ?? '',
                 'error' => ''
             ];
 
@@ -38,7 +38,8 @@ class Klanten extends BaseController
 
             if (empty($data['error'])) {
                 if ($this->klantModel->addKlant($data)) {
-                    header('Location: ' . URLROOT . '/klanten/index');
+                    header('Location: ' . URLROOT . '/klanten/index?message=' . urlencode('Klant succesvol toegevoegd.') . '&type=success');
+                    exit;
                 } else {
                     $data['error'] = 'Er is een fout opgetreden.';
                 }

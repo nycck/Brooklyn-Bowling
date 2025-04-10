@@ -69,7 +69,7 @@ class Score
 
     public function scoreExists($spelerNaam, $score, $reserveringId)
     {
-        $this->db->query('SELECT COUNT(*) as count FROM Scores WHERE SpelerNaam = :spelerNaam AND Score = :score AND ReserveringId = :reserveringId');
+        $this->db->query('SELECT COUNT(*) as count FROM scores WHERE SpelerNaam = :spelerNaam AND Score = :score AND ReserveringId = :reserveringId');
         $this->db->bind(':spelerNaam', $spelerNaam);
         $this->db->bind(':score', $score);
         $this->db->bind(':reserveringId', $reserveringId);
